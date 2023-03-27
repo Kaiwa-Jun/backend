@@ -4,6 +4,7 @@ class Api::V1::PhotosController < ApplicationController
   end
 
   def create
+  puts "Request Parameters: #{params.inspect}"
   user_id = params[:user_id]
   iso = params[:iso]
   shutter_speed = params[:shutter_speed]
@@ -28,7 +29,10 @@ class Api::V1::PhotosController < ApplicationController
 
   photo.image.attach(params[:image])
 
+  puts "Photo before save: #{photo.inspect}"
+
   if photo.save
+    puts "Photo after save: #{photo.inspect}"
     render json: { message: 'Image successfully uploaded', status: :created }
   else
     render json: { errors: photo.errors.full_messages, status: :unprocessable_entity }

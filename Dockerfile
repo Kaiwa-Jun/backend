@@ -10,6 +10,7 @@ RUN apt-get update -qq \
     && rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update && apt-get install -y netcat
+RUN gem install bundler:2.4.8
 
 RUN mkdir /backend
 WORKDIR /backend
