@@ -4,7 +4,7 @@ set -e
 # Check if the database is up and running.
 if [ "$DATABASE_URL" ]; then
   echo "Waiting for the database to be ready..."
-  while ! nc -z $DATABASE_HOST $DATABASE_PORT; do
+  until timeout 5 bash -c "echo > /dev/tcp/$DATABASE_HOST/$DATABASE_PORT"; do
     sleep 1
   done
 fi

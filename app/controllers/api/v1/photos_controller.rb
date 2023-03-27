@@ -4,36 +4,36 @@ class Api::V1::PhotosController < ApplicationController
   end
 
   def create
-    user_id = params[:user_id]
-    file_url = params[:file_url]
-    iso = params[:iso]
-    shutter_speed = params[:shutter_speed]
-    f_value = params[:f_value]
-    camera_model = params[:camera_model]
-    latitude = params[:latitude]
-    longitude = params[:longitude]
-    location_enabled = params[:location_enabled]
-    taken_at = params[:taken_at]
+  user_id = params[:user_id]
+  iso = params[:iso]
+  shutter_speed = params[:shutter_speed]
+  f_value = params[:f_value]
+  camera_model = params[:camera_model]
+  latitude = params[:latitude]
+  longitude = params[:longitude]
+  location_enabled = params[:location_enabled]
+  taken_at = params[:taken_at]
 
-    photo = Photo.create(
-      user_id: user_id,
-      file_url: file_url,
-      iso: iso,
-      shutter_speed: shutter_speed,
-      f_value: f_value,
-      camera_model: camera_model,
-      latitude: latitude,
-      longitude: longitude,
-      location_enabled: location_enabled,
-      taken_at: taken_at
-    )
+  photo = Photo.new(
+    user_id: user_id,
+    iso: iso,
+    shutter_speed: shutter_speed,
+    f_value: f_value,
+    camera_model: camera_model,
+    latitude: latitude,
+    longitude: longitude,
+    location_enabled: location_enabled,
+    taken_at: taken_at
+  )
 
-    if photo.persisted?
-      render json: { status: :created }
-    else
-      render json: { status: :unprocessable_entity }
-    end
+  photo.image.attach(params[:image])
+
+  if photo.save
+    render json: { message: 'Image successfully uploaded', status: :created }
+  else
+    render json: { errors: photo.errors.full_messages, status: :unprocessable_entity }
   end
+end
 
   def show
     # 特定の写真を取得する処理

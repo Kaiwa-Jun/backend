@@ -11,8 +11,8 @@ amazon:
   service: S3
   access_key_id: <%= Rails.application.credentials.aws[:access_key_id] %>
   secret_access_key: <%= Rails.application.credentials.aws[:secret_access_key] %>
-  region: ap-northeast-1
-  bucket: shotsharing
+  bucket: <%= Rails.application.credentials.aws[:bucket] %>
+  bucket: <%= Rails.application.credentials.dig(:aws, :bucket) %>
 # Remember not to checkin your GCS keyfile to a repository
 # google:
 #   service: GCS
