@@ -26,12 +26,12 @@ module Backend
     config.autoload_paths += %W(#{config.root}/lib)
     config.middleware.insert_before 0, Rack::Cors do
       allow do
-        origins 'localhost:3001', '127.0.0.1:3001'
+        origins 'https://shotsharing-kaiwa-jun.vercel.app'
 
         resource '*',
           headers: :any,
           methods: [:get, :post, :put, :patch, :delete, :options, :head],
-          expose: %w(access-token expiry token-type uid client),
+          credentials: true,
           max_age: 0
       end
     end
