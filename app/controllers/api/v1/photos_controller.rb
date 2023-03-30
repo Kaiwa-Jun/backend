@@ -43,7 +43,8 @@ class Api::V1::PhotosController < ApplicationController
 
     if photo.save
       puts "Photo after save: #{photo.inspect}"
-      render json: { message: 'Image successfully uploaded', status: :created }
+      image_url = photo.image.service_url # 画像のURLを取得
+      render json: { message: 'Image successfully uploaded', url: image_url, status: :created }
     else
       render json: { errors: photo.errors.full_messages, status: :unprocessable_entity }
     end
