@@ -1,3 +1,5 @@
+Spring.application_root = '/backend'
+
 Spring.watch(
   ".ruby-version",
   ".rbenv-vars",
