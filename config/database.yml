@@ -7,6 +7,7 @@ default: &default
 development:
   <<: *default
   database: backend_development
+  host: db
   username: <%= ENV['POSTGRES_USER'] %>
   password: <%= ENV['POSTGRES_PASSWORD'] %>
 test:
