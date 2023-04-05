@@ -6,4 +6,8 @@ class Photo < ApplicationRecord
   def attach_image_url
     self.update_column(:file_url, self.image.service_url) unless self.file_url.present?
   end
+
+  def public_image_url
+    self.image.service_url.sub(/\?.*/, "")
+  end
 end

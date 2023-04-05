@@ -2,7 +2,8 @@ require 'exifr/jpeg'
 class Api::V1::PhotosController < ApplicationController
 
   def index
-    # 写真一覧を取得する処理
+    photos = Photo.all
+    render json: photos.to_json(include: { image_attachment: { only: [:id, :service_name, :byte_size] }, image_blob: { only: [:key, :filename, :content_type] }})
   end
 
   def create
@@ -43,7 +44,7 @@ class Api::V1::PhotosController < ApplicationController
 
     if photo.save
       puts "Photo after save: #{photo.inspect}"
-      image_url = photo.image.service_url # 画像のURLを取得
+      image_url = url_for(photo.image) # 画像のURLを取得
       render json: { message: 'Image successfully uploaded', url: image_url, status: :created }
     else
       render json: { errors: photo.errors.full_messages, status: :unprocessable_entity }
