@@ -1,5 +1,11 @@
 require 'exifr/jpeg'
 class Api::V1::PhotosController < ApplicationController
+  # 現在のユーザーが投稿した写真のみを取得するアクション
+  def user_photos
+    user = User.find_by(firebase_uid: params[:user_id])
+    user_photos = user.photos
+    render json: user_photos.to_json(include: { image_attachment: { only: [:id, :service_name, :byte_size] }, image_blob: { only: [:key, :filename, :content_type] }})
+  end
 
   def index
     photos = Photo.all
