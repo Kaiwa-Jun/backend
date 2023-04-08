@@ -8,4 +8,5 @@ Rails.application.routes.draw do
       get '/user_photos/:user_id', to: 'photos#user_photos'
     end
   end
+  match 'api/*path', to: redirect('/api/v1/%{path}'), via: [:get, :post, :put, :patch, :delete]
 end

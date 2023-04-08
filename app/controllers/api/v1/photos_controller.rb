@@ -58,7 +58,8 @@ class Api::V1::PhotosController < ApplicationController
   end
 
   def show
-    # 特定の写真を取得する処理
+    photo = Photo.find(params[:id])
+    render json: photo.as_json(include: :user)
   end
 
   def update
