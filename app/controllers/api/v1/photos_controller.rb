@@ -8,8 +8,19 @@ class Api::V1::PhotosController < ApplicationController
   end
 
   def index
-    photos = Photo.all
-    render json: photos.to_json(include: { image_attachment: { only: [:id, :service_name, :byte_size] }, image_blob: { only: [:key, :filename, :content_type] }})
+    firebase_uid = params[:firebase_uid]
+    all_users = params[:all_users]
+
+    if all_users == 'true'
+      @photos = Photo.all
+    elsif firebase_uid.present?
+      user = User.find_by(firebase_uid: firebase_uid)
+      @photos = user.present? ? user.photos : []
+    else
+      @photos = Photo.all
+    end
+
+    render json: @photos
   end
 
   def create
