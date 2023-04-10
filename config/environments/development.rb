@@ -29,6 +29,7 @@ Rails.application.configure do
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :amazon
+  config.active_storage.service_urls_expire_in = 24.hour
 
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false

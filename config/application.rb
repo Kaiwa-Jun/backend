@@ -24,6 +24,7 @@ module Backend
     config.middleware.use ActionDispatch::Session::CookieStore
     config.api_only = true
     config.autoload_paths += %W(#{config.root}/lib)
+    config.active_storage.enabled = true
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins 'http://localhost:3001', 'https://shotsharing-kaiwa-jun.vercel.app'
