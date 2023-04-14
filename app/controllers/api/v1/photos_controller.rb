@@ -85,6 +85,11 @@ class Api::V1::PhotosController < ApplicationController
   end
 
   def destroy
-    # 特定の写真を削除する処理
+    photo = Photo.find(params[:id])
+    if photo.destroy
+      render json: { message: 'Photo successfully deleted', status: :ok }
+    else
+      render json: { errors: photo.errors.full_messages, status: :unprocessable_entity }
+    end
   end
 end
