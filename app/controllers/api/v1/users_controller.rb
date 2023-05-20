@@ -3,6 +3,7 @@ module Api
     class Api::V1::UsersController < ApplicationController
       def create
         @user = User.new(user_params)
+        @user.provider = 'firebase'
         if @user.save
           render json: @user, status: :created
         else

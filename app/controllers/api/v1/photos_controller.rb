@@ -24,13 +24,23 @@ class Api::V1::PhotosController < ApplicationController
   end
 
   def create
-    puts "Request Parameters: #{params.inspect}"
-    puts "Received user_id: #{params[:user_id]}"
-    user = User.find_by(firebase_uid: params[:user_id])
-    puts "recieved user: #{user.inspect}"
+  puts "Request Parameters: #{params.inspect}"
+  puts "Received user_id: #{params[:user_id]}"
+  user = User.find_by(firebase_uid: params[:user_id])
+
+  if user.nil?
+    return render json: { errors: "User not found", status: :not_found }
+  end
   
-    uploaded_image = params[:image]
-    exif_data = EXIFR::JPEG.new(uploaded_image.tempfile)
+  puts "recieved user: #{user.inspect}"
+  
+  uploaded_image = params[:image]
+
+  if uploaded_image.nil?
+    return render json: { errors: "No image uploaded", status: :unprocessable_entity }
+  end
+  
+  exif_data = EXIFR::JPEG.new(uploaded_image.tempfile)
   
     user_id = user.id
     # Exifデータから取得していた位置情報をリクエストパラメータから取得するように変更
