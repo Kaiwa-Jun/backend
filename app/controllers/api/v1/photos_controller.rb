@@ -33,6 +33,7 @@ class Api::V1::PhotosController < ApplicationController
     render json: @photos
   end
 
+
   def create
     puts "Request Parameters: #{params.inspect}"
     puts "Received user_id: #{params[:user_id]}"
@@ -50,7 +51,10 @@ class Api::V1::PhotosController < ApplicationController
       return render json: { errors: "No image uploaded", status: :unprocessable_entity }
     end
 
-    exif_data = EXIFR::JPEG.new(uploaded_image.tempfile)
+    uploaded_image = params[:image]
+    uploaded_image_io = uploaded_image.open
+
+    exif_data = EXIFR::JPEG.new(uploaded_image_io)
 
     user_id = user.id
     # Exifデータから取得していた位置情報をリクエストパラメータから取得するように変更
@@ -82,7 +86,9 @@ class Api::V1::PhotosController < ApplicationController
       taken_at: taken_at
     )
 
-    photo.image.attach(params[:image])
+    uploaded_image_io.rewind
+    photo.image.attach(io: uploaded_image_io, filename: uploaded_image.original_filename, content_type: uploaded_image.content_type)
+
 
     puts "Photo before save: #{photo.inspect}"
 
