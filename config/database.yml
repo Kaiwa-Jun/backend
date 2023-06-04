@@ -15,6 +15,7 @@ test:
   database: backend_test
 production:
   <<: *default
+  url: <%= ENV['DATABASE_URL'] %>
   database: backend_production
   username: backend
   password: <%= ENV['BACKEND_DATABASE_PASSWORD'] %>
