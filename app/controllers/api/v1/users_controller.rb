@@ -23,28 +23,31 @@ module Api
       end
 
       def authenticate
-  id_token = params[:user][:idToken]
+        # Get the ID token from the Authorization header
+        auth_header = request.headers['Authorization']
+        id_token = auth_header.split(' ').last if auth_header
 
-  begin
-    FirebaseIdToken::Certificates.request
-    certificates = FirebaseIdToken::Certificates.current
-    Rails.logger.debug "Certificates: #{certificates.inspect}"
-  rescue => e
-    Rails.logger.debug "Certificates request failed with error: #{e.inspect}"
-  end
+        begin
+          FirebaseIdToken::Certificates.request
+          certificates = FirebaseIdToken::Certificates.current
+          Rails.logger.debug "Certificates: #{certificates.inspect}"
+        rescue => e
+          Rails.logger.debug "Certificates request failed with error: #{e.inspect}"
+        end
 
-  begin
-    @decoded_token = FirebaseIdToken::Signature.verify(id_token)
-  rescue => e
-    Rails.logger.debug "Token verification failed with error: #{e.inspect}"
-  end
+        begin
+          @decoded_token = FirebaseIdToken::Signature.verify(id_token)
+        rescue => e
+          Rails.logger.debug "Token verification failed with error: #{e.inspect}"
+        end
 
-  Rails.logger.debug "Decoded token: #{@decoded_token.inspect}"
+        Rails.logger.debug "Decoded token: #{@decoded_token.inspect}"
 
-  unless @decoded_token
-    render json: { message: '認証に失敗しました' }, status: :unauthorized
-  end
-end
+        unless @decoded_token
+          render json: { message: '認証に失敗しました' }, status: :unauthorized
+        end
+      end
+
 
     end
   end
