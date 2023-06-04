@@ -22,15 +22,15 @@ class Api::V1::PhotosController < ApplicationController
     all_users = params[:all_users]
 
     if all_users == 'true'
-      @photos = Photo.all
+      @photos = Photo.all.includes(:user)
     elsif firebase_uid.present?
       user = User.find_by(firebase_uid: firebase_uid)
-      @photos = user.present? ? user.photos : []
+      @photos = user.present? ? user.photos.includes(:user) : []
     else
-      @photos = Photo.all
+      @photos = Photo.all.includes(:user)
     end
 
-    render json: @photos
+    render json: @photos.as_json(include: :user)
   end
 
 
