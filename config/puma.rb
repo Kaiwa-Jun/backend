@@ -43,15 +43,13 @@ workers ENV.fetch("WEB_CONCURRENCY") { 2 }
 plugin :tmp_restart
 
 # Add the following lines at the bottom
-on_worker_boot do
-  ActiveRecord::Base.establish_connection if defined?(ActiveRecord)
-end
 
 on_worker_shutdown do
   ActiveRecord::Base.connection.disconnect! if defined?(ActiveRecord)
 end
 
 on_worker_boot do
+  ActiveRecord::Base.establish_connection if defined?(ActiveRecord)
   FileUtils.touch('/tmp/app-initialized')
 end
 
