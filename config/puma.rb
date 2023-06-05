@@ -50,3 +50,21 @@ end
 on_worker_shutdown do
   ActiveRecord::Base.connection.disconnect! if defined?(ActiveRecord)
 end
+
+on_worker_boot do
+  FileUtils.touch('/tmp/app-initialized')
+end
+
+before_fork do
+  require 'puma_worker_killer'
+
+  PumaWorkerKiller.config do |config|
+    config.ram           = 512 # mb
+    config.frequency     = 5    # seconds
+    config.percent_usage = 0.98
+    config.rolling_restart_frequency = 12 * 3600 # 12 hours in seconds
+  end
+  PumaWorkerKiller.start
+
+  FileUtils.rm_f('/backend/tmp/pids/server.pid')
+end
