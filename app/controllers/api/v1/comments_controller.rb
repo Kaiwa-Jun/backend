@@ -1,10 +1,14 @@
 class Api::V1::CommentsController < ApplicationController
+  before_action :authenticate_user, only: [:create, :destroy]
 
   def index
     photo = Photo.find(params[:photo_id])
-    comments = photo.comments
+    comments = photo.comments.map do |comment|
+      comment.as_json.merge(user: comment.user.as_json)
+    end
     render json: comments
   end
+
 
   def create
     @comment = Comment.new(comment_params)
