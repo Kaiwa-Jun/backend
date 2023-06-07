@@ -2,6 +2,7 @@ require 'aws-sdk-s3'
 require 'exifr/jpeg'
 
 class Api::V1::PhotosController < ApplicationController
+  before_action :authenticate_user, except: [:index, :show]
   # 現在のユーザーが投稿した写真のみを取得するアクション
   def user_photos
     user = User.find_by(firebase_uid: params[:user_id])

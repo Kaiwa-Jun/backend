@@ -36,6 +36,8 @@ gem 'aws-sdk-s3', '~> 1.0'
 gem 'mini_magick'
 gem 'google-id-token'
 gem 'firebase_id_token'
+gem 'jwt'
+
 
 
 
