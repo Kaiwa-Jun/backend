@@ -11,6 +11,7 @@ class User < ApplicationRecord
   validates :password, length: { within: Devise.password_length, allow_blank: true }
 
   has_many :photos
+  has_many :likes, dependent: :destroy
 
   private
 
