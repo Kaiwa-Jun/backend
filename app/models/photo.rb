@@ -3,6 +3,7 @@ class Photo < ApplicationRecord
   has_one_attached :image
   after_save :attach_image_url
   has_many :comments
+  has_many :likes, dependent: :destroy
 
   def attach_image_url
     self.update_column(:file_url, self.image.service_url) unless self.file_url.present?
