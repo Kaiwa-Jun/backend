@@ -6,7 +6,7 @@ class Api::V1::LikesController < ApplicationController
     @photo = Photo.find(params[:photo_id])
     @like = @photo.likes.find_by(user_id: @current_user.id)
     if @like
-      render json: @like
+      render json: @like.attributes.merge({ liked: true })
     else
       render json: { liked: false }, status: :ok
     end
@@ -30,10 +30,14 @@ class Api::V1::LikesController < ApplicationController
     @photo = Photo.find(params[:photo_id])
     @like = @photo.likes.find_by(user_id: @current_user.id)
 
-    if @like.destroy
-      render json: { success: true }, status: :ok
+    if @like
+      if @like.destroy
+        render json: { success: true }, status: :ok
+      else
+        render json: { success: false, message: "Failed to delete like" }, status: :unprocessable_entity
+      end
     else
-      render json: { success: false, message: "Failed to delete like" }, status: :unprocessable_entity
+      render json: { success: false, message: "Like not found" }, status: :not_found
     end
   end
 end
