@@ -1,4 +1,4 @@
-Spring.application_root = '/backend'
+Spring.application_root = './'
 
 Spring.watch(
   ".ruby-version",

@@ -30,13 +30,17 @@ gem 'omniauth'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-twitter'
 gem 'exifr'
-gem 'google-cloud-vision', '~> 1.3.0'
 gem 'rack-cors'
 gem 'aws-sdk-s3', '~> 1.0'
 gem 'mini_magick'
 gem 'google-id-token'
 gem 'firebase_id_token'
 gem 'jwt'
+gem 'dotenv-rails'
+gem 'google-cloud-vision'
+gem 'google-cloud-translate', '~> 3.0'
+
+
 
 
 

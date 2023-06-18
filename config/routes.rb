@@ -9,6 +9,7 @@ Rails.application.routes.draw do
         resources :comments, only: [:index, :create]
         resource :likes, only: [:show, :create, :destroy]
       end
+      get '/search', to: 'search#index'
     end
   end
 end
