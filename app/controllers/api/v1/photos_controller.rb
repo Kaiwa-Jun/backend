@@ -6,7 +6,7 @@ require 'exifr/jpeg'
 require "google/cloud/vision"
 
 class Api::V1::PhotosController < ApplicationController
-  before_action :authenticate_user, except: [:index, :show]
+  before_action :authenticate_user, except: [:index, :show, :destroy]
 
   def user_photos
     user = User.find_by(firebase_uid: params[:user_id])
