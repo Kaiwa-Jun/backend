@@ -41,6 +41,9 @@ class Api::V1::PhotosController < ApplicationController
   def create
     puts "Request Parameters: #{params.inspect}"
     puts "Received user_id: #{params[:user_id]}"
+    puts "Received latitude: #{params[:latitude]}"
+    puts "Received longitude: #{params[:longitude]}"
+    puts "Received location_enabled: #{params[:location_enabled]}"
     user = User.find_by(firebase_uid: params[:user_id])
 
     if user.nil?
@@ -74,6 +77,10 @@ class Api::V1::PhotosController < ApplicationController
       longitude = nil
     end
     location_enabled = params[:location_enabled] == "true"
+
+    puts "Latitude: #{latitude}"
+    puts "Longitude: #{longitude}"
+    puts "Location Enabled: #{location_enabled}"
 
     vision = Google::Cloud::Vision.image_annotator
 

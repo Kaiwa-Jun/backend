@@ -3,12 +3,13 @@ class Api::V1::LikesController < ApplicationController
 
 
   def show
-    @photo = Photo.find(params[:photo_id])
+    @photo = Photo.includes(:likes).find(params[:photo_id])
     @like = @photo.likes.find_by(user_id: @current_user.id)
+    likes_count = @photo.likes.size
     if @like
-      render json: @like.attributes.merge({ liked: true, likes_count: @photo.likes.count })
+      render json: @like.attributes.merge({ liked: true, likes_count: likes_count })
     else
-      render json: { liked: false, likes_count: @photo.likes.count }, status: :ok
+      render json: { liked: false, likes_count: likes_count }, status: :ok
     end
   end
 
