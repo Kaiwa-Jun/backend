@@ -18,6 +18,7 @@ class Api::V1::LikesController < ApplicationController
     like = photo.likes.find_or_initialize_by(user: current_user)
     if like.new_record?
       if like.save
+        ActionCable.server.broadcast 'likes_channel', { photo_id: photo.id, likes_count: photo.likes.count }
         render json: like, status: :created
       else
         render json: like.errors, status: :unprocessable_entity
@@ -30,6 +31,7 @@ class Api::V1::LikesController < ApplicationController
   def destroy
     if @like
       if @like.destroy
+        ActionCable.server.broadcast 'likes_channel', { photo_id: @photo.id, likes_count: @photo.likes.count }
         render json: { success: true }, status: :ok
       else
         render json: { success: false, message: "Failed to delete like" }, status: :unprocessable_entity
