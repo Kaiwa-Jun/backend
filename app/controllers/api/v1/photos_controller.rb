@@ -66,16 +66,22 @@ class Api::V1::PhotosController < ApplicationController
       f_value = exif_data.f_number.to_f
       camera_model = exif_data.model
       taken_at = exif_data.date_time_original
+      latitude = exif_data.gps_latitude
+      longitude = exif_data.gps_longitude
+
+      # EXIFデータから得られた位置情報をログに出力
+      puts "EXIF Latitude: #{exif_data.gps_latitude}"
+      puts "EXIF Longitude: #{exif_data.gps_longitude}"
     end
 
     user_id = user.id
-    if params[:location_enabled] == "true"
-      latitude = params[:latitude].to_f
-      longitude = params[:longitude].to_f
-    else
-      latitude = nil
-      longitude = nil
-    end
+    # if params[:location_enabled] == "true"
+    #   latitude = params[:latitude].to_f
+    #   longitude = params[:longitude].to_f
+    # else
+    #   latitude = nil
+    #   longitude = nil
+    # end
     location_enabled = params[:location_enabled] == "true"
 
     puts "Latitude: #{latitude}"
