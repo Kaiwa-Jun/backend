@@ -12,11 +12,8 @@ class Api::V1::PhotosController < ApplicationController
     user = User.find_by(firebase_uid: params[:user_id])
     user_photos = user.photos
 
-    s3 = Aws::S3::Resource.new(region: 'ap-northeast-1')
-
     user_photos.each do |photo|
-      obj = s3.bucket('shotsharing').object(photo.image.key)
-      photo.image_url = obj.presigned_url(:get, expires_in: 3600)
+      photo.image_url = url_for(photo.image)
     end
 
     render json: user_photos.to_json(include: { image_attachment: { only: [:id, :service_name, :byte_size] }, image_blob: { only: [:key, :filename, :content_type] }, methods: [:image_url]})
@@ -75,13 +72,7 @@ class Api::V1::PhotosController < ApplicationController
     end
 
     user_id = user.id
-    # if params[:location_enabled] == "true"
-    #   latitude = params[:latitude].to_f
-    #   longitude = params[:longitude].to_f
-    # else
-    #   latitude = nil
-    #   longitude = nil
-    # end
+
     location_enabled = params[:location_enabled] == "true"
 
     puts "Latitude: #{latitude}"
@@ -113,14 +104,12 @@ class Api::V1::PhotosController < ApplicationController
     photo.categories = categories
 
     uploaded_image_io.rewind
-     photo.image.attach(io: uploaded_image_io, filename: uploaded_image.original_filename, content_type: uploaded_image.content_type)
+    photo.image.attach(io: uploaded_image_io, filename: uploaded_image.original_filename, content_type: uploaded_image.content_type)
 
     puts "Photo before save: #{photo.inspect}"
 
     if photo.save
-      s3 = Aws::S3::Resource.new(region: 'ap-northeast-1')
-      obj = s3.bucket('shotsharing').object(photo.image.key)
-      image_url = obj.presigned_url(:get, expires_in: 3600)
+      image_url = url_for(photo.image)
       render json: { message: 'Image successfully uploaded', url: image_url, status: :created }
     else
       render json: { errors: photo.errors.full_messages }, status: :unprocessable_entity
