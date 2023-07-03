@@ -3,6 +3,13 @@ class Api::V1::LikesController < ApplicationController
   before_action :set_photo, only: [:show, :destroy]
   before_action :set_like, only: [:show, :destroy]
 
+  def index
+    user = User.find_by(firebase_uid: params[:user_id])
+    liked_photos = user.liked_photos
+    render json: { photos: liked_photos }, status: :ok
+  end
+
+
   def show
     likes_count = @photo.likes.size
     if @like
