@@ -5,6 +5,7 @@ Rails.application.routes.draw do
       get 'hello', to: 'hello#index'
       resources :users, only: [:create] do
         resources :likes, only: [:index], controller: 'likes'
+        resources :comments, only: [:index], module: :users
       end
       get '/user_photos/:user_id', to: 'photos#user_photos'
       resources :photos, only: [:index, :create, :show, :update, :destroy] do
