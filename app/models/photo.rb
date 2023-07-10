@@ -2,7 +2,7 @@ class Photo < ApplicationRecord
   belongs_to :user
   has_one_attached :image
   after_save :attach_image_url
-  has_many :comments
+  has_many :comments, dependent: :destroy
   has_many :likes, dependent: :destroy
   has_many :photo_categories
   has_many :categories, through: :photo_categories

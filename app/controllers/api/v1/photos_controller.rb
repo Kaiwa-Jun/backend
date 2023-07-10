@@ -60,11 +60,17 @@ class Api::V1::PhotosController < ApplicationController
       exif_data = EXIFR::JPEG.new(uploaded_image_io)
       iso = exif_data.iso_speed_ratings
       shutter_speed = exif_data.shutter_speed_value.to_s
+      # "Infinity"をチェックし、代替値に置き換える
+      if shutter_speed == "Infinity"
+        # 代替値を設定します。ここでは0を使用しますが、適切な値を自分で決めてください
+        shutter_speed = 999999
+      end
       f_value = exif_data.f_number.to_f
       camera_model = exif_data.model
       taken_at = exif_data.date_time_original
       latitude = exif_data.gps_latitude
       longitude = exif_data.gps_longitude
+      exposure_time = exif_data.exposure_time.to_f
 
       # EXIFデータから得られた位置情報をログに出力
       puts "EXIF Latitude: #{exif_data.gps_latitude}"
@@ -98,7 +104,8 @@ class Api::V1::PhotosController < ApplicationController
       latitude: latitude,
       longitude: longitude,
       location_enabled: location_enabled,
-      taken_at: taken_at
+      taken_at: taken_at,
+      exposure_time: exposure_time
     )
 
     photo.categories = categories
