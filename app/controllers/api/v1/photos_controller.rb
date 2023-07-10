@@ -110,7 +110,7 @@ class Api::V1::PhotosController < ApplicationController
 
     if photo.save
       image_url = url_for(photo.image)
-      render json: { message: 'Image successfully uploaded', url: image_url, status: :created }
+      render json: { message: 'Image successfully uploaded', url: image_url, id: photo.id, status: :created }
     else
       render json: { errors: photo.errors.full_messages }, status: :unprocessable_entity
     end
