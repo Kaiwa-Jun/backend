@@ -20,19 +20,19 @@ class Api::V1::PhotosController < ApplicationController
   end
 
   def index
-    firebase_uid = params[:firebase_uid]
-    all_users = params[:all_users]
-
-    if all_users == 'true'
-      @photos = Photo.all.includes(:user)
-    elsif firebase_uid.present?
-      user = User.find_by(firebase_uid: firebase_uid)
-      @photos = user.present? ? user.photos.includes(:user) : []
+    if params[:all_users] == "true" || params[:firebase_uid].nil?
+      @photos = Photo.all
     else
-      @photos = Photo.all.includes(:user)
+      @user = User.find_by(firebase_uid: params[:firebase_uid])
+      @photos = @user.photos
     end
 
-    render json: @photos.as_json(include: :user)
+    # Include the count of likes for each photo
+    @photos = @photos.map do |photo|
+      photo.attributes.merge(likes_count: photo.likes.count)
+    end
+
+    render json: @photos
   end
 
   def create

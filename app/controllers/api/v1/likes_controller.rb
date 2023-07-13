@@ -9,7 +9,6 @@ class Api::V1::LikesController < ApplicationController
     render json: { photos: liked_photos }, status: :ok
   end
 
-
   def show
     likes_count = @photo.likes.size
     if @like
@@ -19,14 +18,14 @@ class Api::V1::LikesController < ApplicationController
     end
   end
 
-
   def create
     photo = Photo.find(params[:photo_id])
     like = photo.likes.find_or_initialize_by(user: current_user)
     if like.new_record?
       if like.save
         ActionCable.server.broadcast 'likes_channel', { photo_id: photo.id, likes_count: photo.likes.count }
-        render json: like, status: :created
+        likes_count = photo.likes.count
+        render json: like.attributes.merge({ likes_count: likes_count }), status: :created
       else
         render json: like.errors, status: :unprocessable_entity
       end
@@ -39,7 +38,8 @@ class Api::V1::LikesController < ApplicationController
     if @like
       if @like.destroy
         ActionCable.server.broadcast 'likes_channel', { photo_id: @photo.id, likes_count: @photo.likes.count }
-        render json: { success: true }, status: :ok
+        likes_count = Like.where(photo_id: @photo.id).count
+        render json: { success: true, likes_count: likes_count }, status: :ok
       else
         render json: { success: false, message: "Failed to delete like" }, status: :unprocessable_entity
       end
