@@ -29,8 +29,9 @@ class Api::V1::PhotosController < ApplicationController
 
     # Include the count of likes for each photo
     @photos = @photos.map do |photo|
-      photo.attributes.merge(likes_count: photo.likes.count)
+      photo.as_json(include: :user).merge(likes_count: photo.likes.count)
     end
+
 
     render json: @photos
   end
