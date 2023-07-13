@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       get 'hello', to: 'hello#index'
-      resources :users, only: [:create] do
+      resources :users, only: [:create, :update] do
         resources :likes, only: [:index], controller: 'likes'
         resources :comments, only: [:index], module: :users
       end
