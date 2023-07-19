@@ -5,7 +5,6 @@ class LikeBroadcastJob < ApplicationJob
     ActionCable.server.broadcast 'likes_channel', like: render_like(like), likes_count: like.photo.likes.count
   end
 
-
   private
 
   def render_like(like)

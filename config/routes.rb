@@ -11,6 +11,9 @@ Rails.application.routes.draw do
       resources :photos, only: [:index, :create, :show, :update, :destroy] do
         resources :comments, only: [:index, :create]
         resource :likes, only: [:show, :create, :destroy]
+        collection do
+          get 'comments_count'
+        end
       end
       get '/search', to: 'search#index'
     end
