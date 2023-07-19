@@ -15,7 +15,6 @@ class User < ApplicationRecord
   has_many :liked_photos, through: :likes, source: :photo
   has_many :comments
 
-
   private
 
   def password_required?

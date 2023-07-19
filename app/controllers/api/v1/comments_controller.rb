@@ -1,5 +1,6 @@
 class Api::V1::CommentsController < ApplicationController
   before_action :authenticate_user, only: [:create, :destroy]
+  after_action :update_comment_counts, only: [:create, :destroy]
 
   def index
     photo = Photo.includes(comments: :user).find(params[:photo_id])
@@ -27,6 +28,11 @@ class Api::V1::CommentsController < ApplicationController
   end
 
   private
+
+  def update_comment_counts
+    photo = Photo.find(params[:photo_id])
+    photo.update(comments_count: photo.comments.count)
+  end
 
   def comment_params
     params.require(:comment).permit(:photo_id, :content)

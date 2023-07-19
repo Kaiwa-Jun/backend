@@ -63,8 +63,6 @@ module Api
           render json: { message: '認証に失敗しました' }, status: :unauthorized
         end
       end
-
-
     end
   end
 end

@@ -27,14 +27,16 @@ class Api::V1::PhotosController < ApplicationController
       @photos = @user.photos
     end
 
-    # Include the count of likes for each photo
     @photos = @photos.map do |photo|
-      photo.as_json(include: :user).merge(likes_count: photo.likes.count)
+      photo.as_json(include: :user).merge(
+        likes_count: photo.likes_count,
+        comments_count: photo.comments_count
+      )
     end
-
 
     render json: @photos
   end
+
 
   def create
     puts "Request Parameters: #{params.inspect}"
@@ -64,7 +66,7 @@ class Api::V1::PhotosController < ApplicationController
       # "Infinity"をチェックし、代替値に置き換える
       if shutter_speed == "Infinity"
         # 代替値を設定します。ここでは0を使用しますが、適切な値を自分で決めてください
-        shutter_speed = 999999
+        shutter_speed = 999_999
       end
       f_value = exif_data.f_number.to_f
       camera_model = exif_data.model
@@ -126,8 +128,14 @@ class Api::V1::PhotosController < ApplicationController
 
   def show
     photo = Photo.find(params[:id])
-    render json: photo.as_json(include: :user)
+
+    render json: photo.as_json(
+      only: [:id, :iso, :shutter_speed, :f_value, :camera_model, :taken_at, :exposure_time, :likes_count, :comments_count],
+      include: :user,
+      methods: [:image_url]
+    )
   end
+
 
   def update
     photo = Photo.find(params[:id])
@@ -145,6 +153,12 @@ class Api::V1::PhotosController < ApplicationController
     else
       render json: { errors: photo.errors.full_messages }, status: :unprocessable_entity
     end
+  end
+
+  def comments_count
+    photo_ids = params[:photo_ids].split(',')
+    counts = Comment.where(photo_id: photo_ids).group(:photo_id).count
+    render json: counts
   end
 
   private

@@ -14,4 +14,9 @@ class Photo < ApplicationRecord
   def public_image_url
     self.image.service_url.sub(/\?.*/, "")
   end
+
+  def image_url
+    Rails.application.routes.url_helpers.rails_blob_url(image) if image.attached?
+  end
+
 end
